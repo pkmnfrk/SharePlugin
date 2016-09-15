@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using UIKit;
+using SafariServices;
 
 namespace Plugin.Share
 {
@@ -17,9 +18,10 @@ namespace Plugin.Share
         /// For linker
         /// </summary>
         /// <returns></returns>
-        public static async Task Init()
+        public static Task Init()
         {
             var test = DateTime.UtcNow;
+            return Task.FromResult(true);
         }
 
         static ShareImplementation()
@@ -54,6 +56,8 @@ namespace Plugin.Share
                     {
                         sfViewController.PopoverPresentationController.SourceView = vc.View;
                     }
+
+                    sfViewController.Delegate = new SafariViewControllerDelegate(options?.OnSafariWebViewControllerDone);
 
                     await vc.PresentViewControllerAsync(sfViewController, true);
                 }
@@ -201,5 +205,20 @@ namespace Plugin.Share
         /// </summary>
         public bool SupportsClipboard => true;
 
+
+        private class SafariViewControllerDelegate : SafariServices.SFSafariViewControllerDelegate
+        {
+            private Action onDone;
+
+            public SafariViewControllerDelegate(Action onDone)
+            {
+                this.onDone = onDone;
+            }
+
+            public override void DidFinish(SFSafariViewController controller)
+            {
+                onDone?.Invoke();
+            }
+        }
     }
 }

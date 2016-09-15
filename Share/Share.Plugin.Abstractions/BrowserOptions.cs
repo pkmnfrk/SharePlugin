@@ -11,6 +11,11 @@
         /// </summary>
         public bool UseSafariWebViewController { get; set; } = true;
         /// <summary>
+        /// iOS: When the user taps the done button, this callback is invoked. If it returns true, the webview is dismissed. If it returns false, it does not
+        /// Default is null
+        /// </summary>
+        public System.Action OnSafariWebViewControllerDone { get; set; } = null;
+        /// <summary>
         /// iOS: Gets or sets to use reader mode (good for markdown files)
         /// Default is false
         /// </summary>
