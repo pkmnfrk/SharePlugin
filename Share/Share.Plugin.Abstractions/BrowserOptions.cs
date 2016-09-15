@@ -14,7 +14,13 @@
         /// iOS: Gets or sets to use reader mode (good for markdown files)
         /// Default is false
         /// </summary>
-        public bool UseSafairReaderMode { get; set; } = false;
+        [System.Obsolete("Use UseSafariReaderMode instead", true)]
+        public bool UseSafairReaderMode { get { return UseSafariReaderMode; } set { UseSafariReaderMode = value; } }
+        /// <summary>
+        /// iOS: Gets or sets to use reader mode (good for markdown files)
+        /// Default is false
+        /// </summary>
+        public bool UseSafariReaderMode { get; set; } = false;
         /// <summary>
         /// Android: Gets or sets to display title as well as url in chrome custom tabs
         /// Default is true
