@@ -35,6 +35,15 @@ namespace Plugin.Share.Abstractions
         Task ShareLink(string url, string message = null, string title = null);
 
         /// <summary>
+        /// Share a link url with compatible services
+        /// </summary>
+        /// <param name="url">Link to share</param>
+        /// <param name="message">Message to include with the link</param>
+        /// <param name="title">Title of the share popup on Android and Windows, email subject if sharing with mail apps</param>
+        /// <returns>awaitable Task</returns>
+        Task ShareLink(byte[] data, string type, string url = null, string message = null, string title = null);
+
+        /// <summary>
         /// Sets text on the clipboard
         /// </summary>
         /// <param name="text">Text to set</param>

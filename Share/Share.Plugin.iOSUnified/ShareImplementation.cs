@@ -94,7 +94,7 @@ namespace Plugin.Share
         /// <returns>awaitable Task</returns>
         public async Task Share(string text, string title = null, params NSString[] excludedActivityTypes)
         {
-            await ShareInternal(title, text, null, excludedActivityTypes);
+            await ShareInternal(title, text, null, excludedActivityTypes, null, null);
         }
 
         /// <summary>
@@ -120,7 +120,21 @@ namespace Plugin.Share
         /// <returns>awaitable Task</returns>
         public async Task ShareLink(string url, string message = null, string title = null, params NSString[] excludedActivityTypes)
         {
-            await ShareInternal(title, message, url, excludedActivityTypes);
+            await ShareInternal(title, message, url, excludedActivityTypes, null, null);
+        }
+
+        /// <summary>
+        /// Share a link url with compatible services
+        /// </summary>
+        /// <param name="url">Link to share</param>
+        /// <param name="message">Message to include with the link</param>
+        /// <param name="title">Title of the share popup on Android and Windows, email subject if sharing with mail apps</param>
+        /// <param name="excludedActivityTypes">UIActivityType to exclude</param>
+        /// <returns>awaitable Task</returns>
+        public async Task ShareLink(byte[] data, string type,  string url = null, string message = null, string title = null)
+        {
+            var excluded = ExcludedUIActivityTypes == null ? null : ExcludedUIActivityTypes.ToArray();
+            await ShareInternal(title, message, url, excluded, data, type);
         }
 
         /// <summary>
@@ -131,7 +145,7 @@ namespace Plugin.Share
         /// <param name="url">Link to share</param>
         /// <param name="excludedActivityTypes">UIActivityType to excluded</param>
         /// <returns>awaitable Task</returns>
-        async Task ShareInternal(string title, string message, string url, NSString[] excludedActivityTypes)
+        async Task ShareInternal(string title, string message, string url, NSString[] excludedActivityTypes, byte[] data, string type)
         {
             try
             {
@@ -140,6 +154,14 @@ namespace Plugin.Share
                     items.Add(new ShareActivityItemSource(new NSString(message), title));
                 if (url != null)
                     items.Add(new ShareActivityItemSource(NSUrl.FromString(url), title));
+                if(data != null)
+                {
+                    if(type.StartsWith("image/"))
+                    {
+                        var img = UIImage.LoadFromData(NSData.FromArray(data));
+                        items.Add(new ShareActivityItemSource(img, title));
+                    }
+                }
 
                 var activityController = new UIActivityViewController(items.ToArray(), null);
 
